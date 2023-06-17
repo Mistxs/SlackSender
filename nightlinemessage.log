@@ -1,0 +1,12 @@
+2023-06-01 21:18:30,086 - INFO - start evening_message
+2023-06-01 21:18:30,947 - INFO - capture_screenshot_with_sort will started
+2023-06-01 21:18:30,957 - INFO - Applicable driver not found; attempting to install with Selenium Manager (Beta)
+2023-06-01 21:19:08,561 - INFO - Webdriver: Link is https://yclients.helpdeskeddy.com/ru/ticket/list/filter/id/17/ticket/462759
+2023-06-01 21:19:12,762 - INFO - ScreenShot Saved Succesfully
+2023-06-01 21:19:19,390 - INFO - evening_message executed successfully
+2023-06-01 21:19:51,505 - INFO - start evening_message
+2023-06-01 21:19:52,420 - INFO - capture_screenshot_with_sort will started
+2023-06-01 21:19:52,433 - INFO - Applicable driver not found; attempting to install with Selenium Manager (Beta)
+2023-06-01 21:20:26,479 - INFO - Webdriver: Link is https://yclients.helpdeskeddy.com/ru/ticket/list/filter/id/17/ticket/462759
+2023-06-01 21:20:30,670 - INFO - ScreenShot Saved Succesfully
+2023-06-01 21:20:37,319 - INFO - evening_message executed successfully
