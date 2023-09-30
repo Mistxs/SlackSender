@@ -1,0 +1,63 @@
+#progress_bar {
+    width: 100%;
+    height: 12px;
+    margin: 10px 0px 10px 0px;
+    appearance: none;
+    border: none;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#progress_bar::-webkit-progress-bar {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+#progress_bar::-webkit-progress-value {
+  background-color: #4caf50;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+
+
+.ticket-info {
+  cursor: pointer;
+}
+
+/* Стили для всплывающей подсказки */
+.ticket-info[title]:hover:after {
+  content: attr(title);
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+
+.ui-widget {
+    font-family: inherit!important;
+    font-size: 13px!important;
+    background-color: rgb(255 255 255 / 50%)!important;
+    padding: 20px!important;
+
+    border: none!important;
+    border-radius: 0.5em!important;
+    backdrop-filter: blur(10px)!important;
+    -webkit-backdrop-filter: blur(10px)!important;
+}
+
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover {
+	border: none!important;
+	background: #007fff2e!important;
+	color: #ffffff;
+}

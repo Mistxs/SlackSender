@@ -9,27 +9,34 @@ slack_token = slack_token
 client = WebClient(token=slack_token)
 
 # ID канала, в котором нужно прочитать сообщения
-# channel_id = "C058PJHTDEH"
-channel_id = "CCPT7J0GN"
-message_ts = "1686765312.326469"
+channel_id = "C058PJHTDEH"  #innatest
+# channel_id = "C05N85JB0UW"
+
+# message_ts = "1686765312.326469"
 def getpost():
     # Укажите идентификатор сообщения, комментарии к которому нужно удалить
-    message_ts = "1686765312.326469"
+    # message_ts = "1694508955.918239"
+    response = client.conversations_history(channel=channel_id)
 
-    # Получите список комментариев к указанному сообщению
-    try:
-        response = client.conversations_replies(channel=channel_id, ts=message_ts)
-        comments = response["messages"]
-    except SlackApiError as e:
-        print(f"Ошибка при получении комментариев: {e.response['error']}")
+    # Обработка списка сообщений
+    messages = response['messages']
+    for message in messages:
+        text = message['text']
+        print(text)
 
-    # Пройдитесь по каждому комментарию и удалите их
-    for comment in comments:
-        try:
-            client.chat_delete(channel=channel_id, ts=comment["ts"])
-            print(f"Комментарий {comment['ts']} удален")
-        except SlackApiError as e:
-            print(f"Ошибка при удалении комментария {comment['ts']}: {e.response['error']}")
+
+    # try:
+    #     response = client.conversations_replies(channel=channel_id, ts=message_ts)
+    #     comments = response["messages"]
+    # except SlackApiError as e:
+    #     print(f"Ошибка при получении комментариев: {e.response['error']}")
+    #
+    # for comment in comments:
+    #     try:
+    #         client.chat_delete(channel=channel_id, ts=comment["ts"])
+    #         print(f"Комментарий {comment['ts']} удален")
+    #     except SlackApiError as e:
+    #         print(f"Ошибка при удалении комментария {comment['ts']}: {e.response['error']}")
 
 
 # Удаление сообщений

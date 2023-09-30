@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inna Logs</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+           #logContainer {
+            background-color: black;
+            color: white;
+            padding: 10px;
+            font-family: monospace;
+                    height: 300px;
+        overflow-y: auto;
+    }
+        }
+</style>
+</head>
+<body>
+    <h1>ИннаЛоги</h1>
+
+
+<div id="logContainer"></div>
+    <script>
+$(document).ready(function() {
+    var lastTimestamp = '';
+    var requestFlag = true;
+
+    function getLogs() {
+        if (!requestFlag) {
+            return;
+        }
+
+        requestFlag = false;
+
+        $.getJSON('/logs', function(data) {
+            var newLogs = data.filter(function(log) {
+                return log.timestamp > lastTimestamp;
+            });
+
+            if (newLogs.length > 0) {
+                for (var i = 0; i < newLogs.length; i++) {
+                    var log = newLogs[i];
+                    var timestamp = log.timestamp;
+                    var message = log.message;
+                    var logItem = '<p><strong>' + timestamp + '</strong>: ' + message + '</p>';
+                    $('#logContainer').append(logItem);
+                }
+
+                lastTimestamp = newLogs[newLogs.length - 1].timestamp;
+
+                var logContainer = document.getElementById('logContainer');
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+        }).always(function() {
+            requestFlag = true;
+        });
+    }
+
+    getLogs();
+});
+
+    </script>
+</body>
+</html>
+
+

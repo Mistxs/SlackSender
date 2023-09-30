@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-import os
 import time
 import uuid
 
-import psutil
-import openai
 import logging
-from selenium.webdriver.support.wait import WebDriverWait
 
 from config import slack_token, openaikey
 from slack_sdk import WebClient
@@ -14,33 +10,45 @@ from slack_sdk.errors import SlackApiError
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.events import EVENT_JOB_MISSED
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support import expected_conditions as EC
 import datetime
+import eddy_collect
 
-current_time = datetime.datetime.now()
-datetime_str = current_time.strftime("%d-%m-%Y_%H-%M-%S")
-screenshot_path = f"screens/screenshot_{datetime_str}.png"  # Путь для сохранения скриншота
+
 MAX_RETRIES = 5
 RETRY_DELAY = 5  # Задержка между повторными попытками (в секундах)
 
 
-# Установите токен доступа к Slack API
 slack_token = slack_token
 client = WebClient(token=slack_token)
+
+
 channel_id = "CCPT7J0GN"  # nightline
 # channel_id = "C05974NHZ96"  # innachannel
 # channel_id = "C058PJHTDEH" # innatest
-openai.api_key = openaikey
 
 
 logging.basicConfig(filename='nlm.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 retry_counter = {}  # Словарь для хранения количества попыток выполнения задания
+
+
+
+def collect_data():
+    prosrok = eddy_collect.get_prosrok()
+    queue = eddy_collect.get_queue()
+    open = eddy_collect.get_open()
+    expert = eddy_collect.get_expert()
+    message = f''':aaaaaa: _[Быстрая линия]_ Просрок - *{prosrok}*
+
+:bender: _[Быстрая линия]_ Очередь - *{queue}*
+
+:cattytiping: _[Быстрая линия]_ Открытые - *{open}*
+
+:axeleshik: _[Быстрая линия]_ Эксперт - *{expert}*'''
+
+    return message
+
+
 
 def handle_job_missed(event):
     job_id = event.job_id
@@ -61,21 +69,11 @@ def handle_job_missed(event):
 
         # Удаление созданного задания
         logging.info(f"Delete job: {job_id}")
-        scheduler.remove_job(job_id)
-
-
 
 def check_response(response):
     if "messages" in response:
         return True
     return False
-
-
-def check_screenshot_result(screenshot_path):
-    if os.path.exists(screenshot_path):
-        return True
-    return False
-
 
 def retry_request(func):
     retries = 0
@@ -91,53 +89,6 @@ def retry_request(func):
     logging.error(f"[{datetime.datetime.now()}] Maximum retries reached for {func.__name__}")
 
 
-def capture_screenshot_with_sort(output_path):
-    logging.info('capture_screenshot_with_sort will started')
-    try:
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.get("https://yclients.helpdeskeddy.com/ru/ticket/list/filter/id/17/page/1")
-
-        username_input = driver.find_element(By.ID, "login")
-        password_input = driver.find_element(By.ID, "password")
-        username_input.send_keys("e.barkovskiy@yclients.tech")
-        password_input.send_keys("5!euFIHyjwni")
-        password_input.send_keys(Keys.ENTER)
-        driver.set_window_size(900, 600)
-        time.sleep(10)
-
-        sort_button = driver.find_element(By.XPATH,
-                                          ' // *[ @ id = "ticket-app"] / section / section / div[2] / div / div[1] / div[2] / table / thead / tr / th[3]')
-        sort_button.click()
-        driver.get("https://yclients.helpdeskeddy.com/ru/ticket/list/filter/id/17/page/1")
-        time.sleep(10)
-        sort_button = driver.find_element(By.XPATH,
-                                          ' // *[ @ id = "ticket-app"] / section / section / div[2] / div / div[1] / div[2] / table / thead / tr / th[4]')
-        sort_button.click()
-        driver.get("https://yclients.helpdeskeddy.com/ru/ticket/list/filter/id/17/page/1")
-        time.sleep(5)
-
-        ticket_link = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//div[@class="ticket-list-column-title__center"]/a'))
-        )
-
-        link = ticket_link.get_attribute('href')
-        time.sleep(2)
-        driver.save_screenshot(output_path)
-        if check_screenshot_result(output_path):
-            driver.quit()
-            logging.info('ScreenShot Saved Succesfully')
-        else:
-            logging.info('Error saving screenshot. Run again')
-            capture_screenshot_with_sort(screenshot_path)
-        return link
-
-    except NoSuchElementException:
-        logging.info('WebDriver: NoSuchElementException. Run again')
-        capture_screenshot_with_sort(screenshot_path)
-
-
 def scheduled_message(trigger_message):
     logging.info('start scheduled_message')
     global current_time
@@ -150,18 +101,19 @@ def scheduled_message(trigger_message):
                 if message["text"] == trigger_message:
                     parent_message_ts = message["ts"]
                     # Создание скриншота
-                    link = capture_screenshot_with_sort(screenshot_path)
+                    # link = capture_screenshot_with_sort(screenshot_path)
                     # Отправка комментария в тред (родительское сообщение) с прикрепленным скриншотом
-                    # client.chat_postMessage(channel=channel_id, thread_ts=parent_message_ts, text="nlm v0.2 (open A/B testing)")
-                    client.files_upload_v2(channel=channel_id, thread_ts=parent_message_ts, file=screenshot_path, initial_comment=link)
+                    link = collect_data()
+                    client.chat_postMessage(channel=channel_id, thread_ts=parent_message_ts, text=link)
+                    # client.files_upload_v2(channel=channel_id, thread_ts=parent_message_ts, file=screenshot_path, initial_comment=link)
                     break
             logging.info('scheduled_message executed successfully')
             # Удаление дополнительных заданий только в случае успешного выполнения
-            job_ids_to_remove = [job_id for job_id in retry_counter if job_id != trigger_message]
-            for job_id in job_ids_to_remove:
-                if job_id != "morning_message":
-                    logging.info(f"Delete job: {job_id}")
-                    scheduler.remove_job(job_id)
+            # job_ids_to_remove = [job_id for job_id in retry_counter if job_id != trigger_message]
+            # for job_id in job_ids_to_remove:
+            #     if job_id != "morning_message":
+            #         logging.info(f"Delete job: {job_id}")
+
         else:
             raise Exception("Invalid response from Slack API")
     except SlackApiError as e:
@@ -169,8 +121,9 @@ def scheduled_message(trigger_message):
         logging.error(f"Error reading messages from Slack: {e.response['error']}")
         # Повторное выполнение основного задания
         scheduled_message(trigger_message)
-
-# scheduled_message("Reminder: В 9:00 отправить количество открытых чатов в тред")
+#
+scheduled_message("Reminder: В 9:00 отправить количество открытых чатов в тред")
+scheduled_message("Reminder: Ровно в 21:00 прислать в тред кол-во открытых чатов + дату изменения самого старого чата")
 
 # Запуск функций по расписанию
 scheduler = BlockingScheduler()

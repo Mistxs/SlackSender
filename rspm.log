@@ -1,0 +1,17 @@
+2023-06-25 01:09:56,828 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+2023-06-25 01:09:56,828 - INFO - [33mPress CTRL+C to quit[0m
+2023-06-25 01:10:06,267 - INFO - Start getpermission. URL: https://api.yclients.com/api/v1/company/665535/users/1013225/permissions
+2023-06-25 01:10:06,472 - INFO - Getpermission: response - {'success': False, 'data': None, 'meta': {'message': 'Недостаточно прав'}}
+2023-06-25 01:10:06,487 - INFO - Start putpermission with payload: null
+2023-06-25 01:10:06,633 - INFO - Putpermission: response - {'success': False, 'data': None, 'meta': {'message': 'Недопустимый формат запроса'}}
+2023-06-25 01:10:07,051 - INFO - 127.0.0.1 - - [25/Jun/2023 01:10:07] "POST /inna HTTP/1.1" 200 -
+2023-06-25 01:11:31,855 - INFO - 127.0.0.1 - - [25/Jun/2023 01:11:31] "POST /inna HTTP/1.1" 200 -
+2023-06-25 01:11:31,855 - INFO - 127.0.0.1 - - [25/Jun/2023 01:11:31] "POST /inna HTTP/1.1" 200 -
+2023-06-25 01:12:31,300 - INFO - 127.0.0.1 - - [25/Jun/2023 01:12:31] "POST /inna HTTP/1.1" 200 -
+2023-06-25 01:13:02,950 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:3000
+2023-06-25 01:13:02,951 - INFO - [33mPress CTRL+C to quit[0m
+2023-06-25 01:13:23,902 - INFO - 127.0.0.1 - - [25/Jun/2023 01:13:23] "POST /inna HTTP/1.1" 200 -
+2023-06-25 01:13:23,903 - INFO - 127.0.0.1 - - [25/Jun/2023 01:13:23] "POST /inna HTTP/1.1" 200 -
+2023-06-25 01:14:19,231 - INFO - 127.0.0.1 - - [25/Jun/2023 01:14:19] "POST /inna HTTP/1.1" 200 -

@@ -1,19 +1,31 @@
 from slack_sdk import WebClient
 from config import slack_token
+import eddy_collect
 
-channel = "G01F7R29JUB" #нерабочийфаст
-# channel = "C058PJHTDEH" #innatest
+# channel = "C05N85JB0UW" #нерабочийфаст
+channel = "C058PJHTDEH" #innatest
 
 def send_to_slack(message):
     client = WebClient(token=slack_token)
-    response = client.chat_postMessage(channel=channel, text=message)
+
+    thread_ts = '1695402702.651969'
+    response = client.chat_postMessage(channel=channel, thread_ts=thread_ts, text=message)
     assert response["message"]["text"] == message, response
-    print(response)
     return response
 
-# message = input("Сообщение: ")
+def collect_data():
+    prosrok = eddy_collect.get_prosrok()
+    queue = eddy_collect.get_queue()
+    open = eddy_collect.get_open()
+    expert = eddy_collect.get_expert()
+    message = f''':aaaaaa: _[Быстрая линия]_ Просрок - *{prosrok}*
 
-message = '''Уииии, я научилась новому делу! Я теперь могу пересохранять права пользователей! Это так интересно и здОрово! Но пока я не могу сказать, насколько он хорош, поэтому давайте попробуем его на реальных пользовательских примерах! Вы можете использовать команду *`\права`* и указать ссылку на пользователя, чтобы протестировать его и дать мне обратную связь. Ура!
-Пример сообщения:
-```@InnaBot \права <https://yclients.com/settings/users/edit/543449/12098298/?page=1&amp;editable_length=25#>```'''
-send_to_slack(message)
+:bender: _[Быстрая линия]_ Очередь - *{queue}*
+
+:cattytiping: _[Быстрая линия]_ Открытые - *{open}*
+
+:axeleshik: _[Быстрая линия]_ Эксперт - *{expert}*'''
+
+    return message
+
+send_to_slack(collect_data())

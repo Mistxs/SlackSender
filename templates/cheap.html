@@ -1,0 +1,45 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>РЖД билеты</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+
+    <h1>РЖД билеты</h1>
+        <label for="city1-input">Enter City 1:</label>
+        <input type="text" class="city-input" id="city1-input" name="city1-input" data-city-id="">
+        <br>
+        <label for="city2-input">Enter City 2:</label>
+        <input type="text" class="city-input" id="city2-input" name="city2-input" data-city-id="">
+        <br>
+        <input type="date" id="start_date" name="start_date">
+        <input type="date" id="end_date" name="end_date">
+        <button id="search_button">Search</button>
+
+
+    <div id="progress" style="display: none;">
+        <progress id="progress_bar" value="0" max="100"></progress>
+    </div>
+
+    <table id="results" style="display: none;">
+        <thead>
+            <tr>
+                <th>Type \ Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-type="СИД"><td>СИД</td></tr>
+            <tr data-type="ПЛАЦ"><td>ПЛАЦ</td></tr>
+            <tr data-type="КУПЕ"><td>КУПЕ</td></tr>
+        </tbody>
+    </table>
+</body>
+</html>
