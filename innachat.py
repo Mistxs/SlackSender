@@ -171,41 +171,41 @@ def home():
 
 
 
-@app.route('/inna', methods=['POST'])
-def slack_events():
-    data = request.get_json()
-    if 'event' in data and 'text' in data['event']:
-        text = data['event']['text']
-        channel_id = data['event']['channel']
-        thread_ts = data['event']['ts']
-        user = data['event']['user']
-        # Используйте регулярное выражение для поиска упоминаний пользователей в тексте
-        mentioned_users = re.findall(r'<@(\w+)>', text)
-
-        # Удалите упоминания пользователей из текста
-        cleaned_text = re.sub(r'<@(\w+)>', '', text).strip()
-
-        with lock:
-            if thread_ts in answered_messages:
-                return jsonify({'ok': True})
-
-            response_text = process_message(cleaned_text, data)
-            for response in response_text:
-                message = f"<@{user}> {response}"  # Добавляем упоминание пользователя в начало текста ответа
-                client.chat_postMessage(channel=channel_id, thread_ts=thread_ts, text=message)
-
-            answered_messages[thread_ts] = time.time()
-            current_time = time.time()
-            expired_messages = [ts for ts, timestamp in answered_messages.items() if
-                                current_time - timestamp > 2 * 60 * 60]
-            for ts in expired_messages:
-                del answered_messages[ts]
-    return jsonify({'ok': True})
-
 # @app.route('/inna', methods=['POST'])
-# def slackValidation():
-#     data = request.json
-#     return data["challenge"]
+# def slack_events():
+#     data = request.get_json()
+#     if 'event' in data and 'text' in data['event']:
+#         text = data['event']['text']
+#         channel_id = data['event']['channel']
+#         thread_ts = data['event']['ts']
+#         user = data['event']['user']
+#         # Используйте регулярное выражение для поиска упоминаний пользователей в тексте
+#         mentioned_users = re.findall(r'<@(\w+)>', text)
+#
+#         # Удалите упоминания пользователей из текста
+#         cleaned_text = re.sub(r'<@(\w+)>', '', text).strip()
+#
+#         with lock:
+#             if thread_ts in answered_messages:
+#                 return jsonify({'ok': True})
+#
+#             response_text = process_message(cleaned_text, data)
+#             for response in response_text:
+#                 message = f"<@{user}> {response}"  # Добавляем упоминание пользователя в начало текста ответа
+#                 client.chat_postMessage(channel=channel_id, thread_ts=thread_ts, text=message)
+#
+#             answered_messages[thread_ts] = time.time()
+#             current_time = time.time()
+#             expired_messages = [ts for ts, timestamp in answered_messages.items() if
+#                                 current_time - timestamp > 2 * 60 * 60]
+#             for ts in expired_messages:
+#                 del answered_messages[ts]
+#     return jsonify({'ok': True})
+
+@app.route('/inna', methods=['POST'])
+def slackValidation():
+    data = request.json
+    return data["challenge"]
 
 
 # Роуты для вебстраниц (не действий)
